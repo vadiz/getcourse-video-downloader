@@ -51,8 +51,9 @@ c=0
 while read -r line
 do
 	if ! [[ "$line" =~ ^http ]]; then continue; fi
-	curl -L --output "${tmpdir}/$(printf '%05d' "$c").ts" "$line"
+	curl -L  --retry 100 --retry-delay 2 --output "${tmpdir}/$(printf '%05d' "$c").ts" "$line"
 	c=$((++c))
+	sleep 1
 done < "$second_playlist"
 
 cat "$tmpdir"/*.ts > "$result_file"
